@@ -28,8 +28,9 @@ WebSocketClient client = WebSocketClient(wifi, server, port);
 int RECV_PIN = 11;
 int LED_CONNECT = 10;
 int BUTTON_SHOT = 8;
-int LED_SHOT = 9;
+int LED_SHOT = 2;
 int BUTTON_SHOT_STATE = 0;
+int BUZZER = 3;
 
 IRrecv irrecv(RECV_PIN);
 
@@ -40,6 +41,8 @@ void setup()
   pinMode(LED_CONNECT, OUTPUT);
   digitalWrite(LED_CONNECT, LOW);
   pinMode(BUTTON_SHOT, INPUT);
+  pinMode(BUZZER, OUTPUT);
+  pinMode(LED_CONNECT, OUTPUT);
   Serial.begin(9600);
   // In case the interrupt driver crashes on setup, give a clue
   // to the user what's going on.
@@ -53,29 +56,37 @@ void setup()
 }
 
 void loop() {
-  if (client.connected()) {
-    if (irrecv.decode(&results)) {
-      delay(500);
-      Serial.println("Sending request");
-      // send a hello #
-      client.beginMessage(TYPE_TEXT);
-      sprintf(message, "%s%s", message_prefix, identifiant);
-      client.print(message);
-      client.endMessage();
-      Serial.println(results.value, HEX);
-      irrecv.resume(); // Receive the next value
-
-    }
-    BUTTON_SHOT_STATE = digitalRead(BUTTON_SHOT);
-    //Serial.println(BUTTON_SHOT_STATE);
-    // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-    if (BUTTON_SHOT_STATE == HIGH) {
-      // turn LED on:
-      digitalWrite(LED_SHOT, HIGH);
-      delay(500);
-      digitalWrite(LED_SHOT, LOW);
-    }
+  
+  BUTTON_SHOT_STATE = digitalRead(BUTTON_SHOT);
+  //Serial.println(BUTTON_SHOT_STATE);
+  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
+  if (BUTTON_SHOT_STATE == HIGH) {
+    // turn LED on:
+    //digitalWrite(LED_SHOT, HIGH);
+    Serial.println("ça passe");
+    digitalWrite(LED_CONNECT, HIGH);
+    delay(500);
+    digitalWrite(LED_CONNECT, LOW);
   }
+  
+  if (irrecv.decode(&results) && client.connected()) {
+    digitalWrite(LED_CONNECT, HIGH);
+    tone(BUZZER, 1000); // Send 1KHz sound signal...
+    delay(500);        // ...for 1 sec
+    noTone(BUZZER);     // Stop sound...
+    digitalWrite(LED_CONNECT, LOW);
+    Serial.println("Sending request");
+    // send a hello #
+    client.beginMessage(TYPE_TEXT);
+    sprintf(message, "%s%s", message_prefix, identifiant);
+    client.print(message);
+    client.endMessage();
+    Serial.println(results.value, HEX);
+    irrecv.resume(); // Receive the next value
+
+  }
+
+
 
 }
 
@@ -120,13 +131,13 @@ void websocket_connection() {
     client.begin();
   }
   Serial.println("Connection websocket établie");
-  for(int i=0;i<5;i++)
+  for (int i = 0; i < 5; i++)
   {
-  digitalWrite(LED_CONNECT, LOW);
-  delay(1000);
-  digitalWrite(LED_CONNECT, HIGH);
-  delay(1000);
-  digitalWrite(LED_CONNECT, LOW);
- 
+    digitalWrite(LED_CONNECT, LOW);
+    delay(1000);
+    digitalWrite(LED_CONNECT, HIGH);
+    delay(1000);
+    digitalWrite(LED_CONNECT, LOW);
+
   }
 }
