@@ -27,8 +27,7 @@ WebSocketClient client = WebSocketClient(wifi, server, port);
 
 int RECV_PIN = 11;
 int LED_CONNECT = 10;
-int LED_SHOT = 2;
-int BUZZER = 3;
+int BUZZER = 2;
 
 IRrecv irrecv(RECV_PIN);
 
