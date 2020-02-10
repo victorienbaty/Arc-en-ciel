@@ -27,9 +27,7 @@ WebSocketClient client = WebSocketClient(wifi, server, port);
 
 int RECV_PIN = 11;
 int LED_CONNECT = 10;
-int BUTTON_SHOT = 8;
 int LED_SHOT = 2;
-int BUTTON_SHOT_STATE = 0;
 int BUZZER = 3;
 
 IRrecv irrecv(RECV_PIN);
@@ -40,7 +38,6 @@ void setup()
 {
   pinMode(LED_CONNECT, OUTPUT);
   digitalWrite(LED_CONNECT, LOW);
-  pinMode(BUTTON_SHOT, INPUT);
   pinMode(BUZZER, OUTPUT);
   pinMode(LED_CONNECT, OUTPUT);
   Serial.begin(9600);
@@ -56,18 +53,6 @@ void setup()
 }
 
 void loop() {
-  
-  BUTTON_SHOT_STATE = digitalRead(BUTTON_SHOT);
-  //Serial.println(BUTTON_SHOT_STATE);
-  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-  if (BUTTON_SHOT_STATE == HIGH) {
-    // turn LED on:
-    //digitalWrite(LED_SHOT, HIGH);
-    Serial.println("ça passe");
-    digitalWrite(LED_CONNECT, HIGH);
-    delay(500);
-    digitalWrite(LED_CONNECT, LOW);
-  }
   
   if (irrecv.decode(&results) && client.connected()) {
     digitalWrite(LED_CONNECT, HIGH);
