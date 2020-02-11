@@ -24,7 +24,7 @@ class Player:
 
         return self.__name
 
-    def set_kills(self):
+    def set_kill(self):
         self.__kill = self.__kill + 1
 
     def set_death(self):
@@ -73,12 +73,15 @@ def client_thread(connection, player, max_buffer_size=5120):
         try:
             client_input = receive_input(connection, max_buffer_size)
             if client_input == 'touche':
-
-                ennemi = getVs(player.get_name())
-                print(ennemi)
-                print('Le joueur ' + player.get_name() + ' s\'est fait touché par un autre joueur.')
+                if len(clients) > 1:
+                    ennemi = getVs(player.get_name())
+                else:
+                    ennemi = 'adverse'
+                print('Le joueur ' + player.get_name() + ' s\'est fait touché par le joueur ' + ennemi.get_name() + '.')
                 player.set_death()
                 print('Le joueur', player.get_name(), 'est mort', str(player.get_deaths()), 'fois.')
+                ennemi.set_kill()
+                print('+1 kill pour le joueur ' + ennemi.get_name() + ' il passe à ' + str(ennemi.get_kills()) + ' kills.')
             else:
                 pass
         except:
@@ -97,7 +100,7 @@ def receive_input(connection, max_buffer_size):
     except:
         return ""
 
-    if len(decoded_input.split(',')) > 0:
+    if len(decoded_input.split(',')) > 1:
         if decoded_input.split(',')[0] == 'MSG':
             return decoded_input.split(',')[1]
 
@@ -106,7 +109,7 @@ def getVs(player):
 
     for client in clients:
         if client != player:
-            return client
+            return clients[client]
 
 
 if __name__ == "__main__":
