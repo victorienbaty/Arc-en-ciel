@@ -77,11 +77,11 @@ def client_thread(connection, player, max_buffer_size=5120):
                     ennemi = getVs(player.get_name())
                 else:
                     ennemi = 'adverse'
-                print('Le joueur ' + player.get_name() + ' s\'est fait touché par le joueur ' + ennemi.get_name() + '.')
+                print('\nLe joueur ' + player.get_name() + ' s\'est fait touché par le joueur ' + ennemi.get_name() + '.')
                 player.set_death()
-                print('Le joueur', player.get_name(), 'est mort', str(player.get_deaths()), 'fois.')
+                print('Le joueur', player.get_name(), 'est mort', str(player.get_deaths()), 'fois.\n')
                 ennemi.set_kill()
-                print('+1 kill pour le joueur ' + ennemi.get_name() + ' il passe à ' + str(ennemi.get_kills()) + ' kills.')
+                manche()
             else:
                 pass
         except:
@@ -110,6 +110,12 @@ def getVs(player):
     for client in clients:
         if client != player:
             return clients[client]
+
+
+def manche():
+
+    for client in clients:
+        print("Le joueur " + clients[client].get_name() + " est en " + str(clients[client].get_kills()) + "/" + str(clients[client].get_deaths()))
 
 
 if __name__ == "__main__":
